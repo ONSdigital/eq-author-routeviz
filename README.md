@@ -17,4 +17,4 @@ Then visit [http://localhost:1337](http://localhost:1337) to view a page listing
 
 ## Live version
 
-[http://author-routeviz.baggale.yt/]
+[http://author-routeviz.baggale.yt/](http://author-routeviz.baggale.yt/)
