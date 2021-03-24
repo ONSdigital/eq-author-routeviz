@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Author Routing Visualisation</title>
+    <meta name="description" content="">
+    <meta name="viewport" content=
+    "width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="./index.js" type="module" defer></script>
+    <style>
+     html {
+        width: 100%;
+     }
+     body {
+         font-family: 'Lato',sans-serif;
+         width: 100%;
+        overflow: hidden;
+     }
+     .tooltip {
+         padding: 0.5em;
+         pointer-events: none;
+         position: absolute;
+         opacity: 0;
+         transition: opacity 0.15s;
+         border-radius: 8px;
+         text-align: center;
+         width: 200px;
+         background: black;
+         border: 1 solid grey;
+         color: white;
+     }
+     header {
+         text-align: center;
+         width: 25vw;
+         margin: 0;
+         padding: 0.5em;
+         box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2);
+         position: absolute;
+         left: 0;
+         top: 0;
+         height: 100vh;
+         z-index: 2;
+         background-color: rgba(255, 255, 255, 0.8);
+         overflow-y: scroll;
+     }
+     circle.hasSkip {
+         fill: purple;
+     }
+     .operator {
+         font-weight: bold;
+     }
+     svg {
+         z-index: 1;
+     }
+     circle {
+         fill: lightblue;
+         stroke: black;
+         stroke-width: 1px;
+         transition: 0.25s;
+     }
+     .selected circle {
+         stroke: yellow;
+         stroke-opacity: 0.65;
+         stroke-width: 50px;
+     }
+     text {
+         fill: black;
+         font-weight: bold;
+         text-anchor: middle;
+     }
+     text.tooltip {
+         stroke: grey;
+         stroke-width: 1px;
+         font-size: 1.2em;
+     }
+     line {
+         stroke: grey;
+         stroke-width: 3px;
+         marker-end: url(#arrowhead-grey);
+         transition: 0.25s;
+     }
+     line.routing {
+         stroke: green;
+         marker-end: url(#arrowhead-green);
+     }
+     span.routing {
+         color: green;
+     }
+     line.routingElse {
+         stroke: red;
+         stroke-dasharray: 2;
+         marker-end: url(#arrowhead-red);
+     }
+     span.routingElse {
+         color: red;
+     }
+     .dimmed {
+         filter: blur(2px) grayscale(100%);
+     }
+     g, line {
+         will-change: transform;
+     }
+     line.dimmed {
+         opacity: 0.5;
+     }
+     .option {
+         background-color: #eee;
+     }
+     .condition {
+         background-color: yellow;
+     }
+     ul, li {
+         display: inline;
+         padding-right: 2em;
+     }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Author Routing Visualisation</h1>
+        <h2 id="surveyname">Loading...</h2><span>🗝 Line
+        colours:</span>
+        <ul>
+            <li><span style="color: grey">Default
+            routing</span></li>
+            <li><span style="color: green">Routing logic (rules
+            met)</span></li>
+            <li><span style="color: red">Routing logic (else
+            condition)</span></li>
+        </ul>
+        <hr>
+        <p>ℹ️ Pan by clicking and dragging with the mouse or
+        trackpad. Zoom with the mousewheel or by pinching your
+        trackpad.</p>
+        <p>ℹ️ Hover over a question short name to view the full
+        question title.</p>
+        <p>ℹ️ Click on a question node to view detailed routing
+        information.</p>
+        <p>ℹ️ To de-select a node, click it again.</p>
+        <hr>
+        <div id="selectedQuestionInfo"></div>
+    </header><svg id="stage" width="100vw" height="100vh">
+    <defs>
+        <marker id="arrowhead-grey" viewbox="0 0 10 10" refx="1"
+        refy="5" markerunits="strokeWidth" markerwidth="4"
+        markerheight="4" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#333"></path>
+        </marker>
+        <marker id="arrowhead-green" viewbox="0 0 10 10" refx="1"
+        refy="5" markerunits="strokeWidth" markerwidth="4"
+        markerheight="4" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="green"></path>
+        </marker>
+        <marker id="arrowhead-red" viewbox="0 0 10 10" refx="1"
+        refy="5" markerunits="strokeWidth" markerwidth="4"
+        markerheight="4" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="red"></path>
+        </marker>
+    </defs></svg>
+</body>
+</html>
