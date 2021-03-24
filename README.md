@@ -13,7 +13,7 @@ cd eq-author-routeviz
 python3 -m http.server 1337
 ```
 
-Then visit [http://localhost:1337] to view a page listing examples or visit `index.html/#<questionnaireID>` where `questionnaireID` refers to a questionnaire on production Author.
+Then visit [http://localhost:1337](http://localhost:1337) to view a page listing examples or visit `index.html/#<questionnaireID>` where `questionnaireID` refers to a questionnaire on production Author.
 
 ## Live version
 
