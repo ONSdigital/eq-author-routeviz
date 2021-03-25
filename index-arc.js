@@ -18,6 +18,9 @@ window.addEventListener("resize", updateDimensions);
 // Size of question page circles
 const radius = 24;
 
+// Vertical spacing between notes
+const SPACING = 2 * radius + 10;
+
 // getQuestionnaire: void -> object
 const getQuestionnaire = async (questionnaireId) => {
   try {
@@ -49,13 +52,31 @@ const main = async () => {
     return;
   }
 
-  // Quick hack for now - needs refactoring if we decide to implement layout toggle properly
+  // Quick hack for now - needs refactoring if we decide to implement a real layout toggle
   document.getElementById(
     "switchLayout"
-  ).innerHTML = `<a href="./index-arc.html?${window.location.hash}">Switch to arc diagram</a>`;
+  ).innerHTML = `<a href="./index.html?${window.location.hash}">Switch to network layout</a>`;
+
   document.getElementById("surveyname").innerText = questionnaire.title;
 
   const { data, links } = transformSurvey(questionnaire);
+
+  data.forEach((d, index) => {
+    d.index = index;
+    d.x = width / 3;
+    d.y = index * SPACING;
+  });
+
+  links.forEach((link, index) => {
+    link.source = {
+      index: link.source,
+      ...data[link.source],
+    };
+    link.target = {
+      index: link.target,
+      ...data[link.target],
+    };
+  });
 
   const stage = d3.select("#stage");
   const zoom = d3
@@ -72,12 +93,34 @@ const main = async () => {
 
   let selectedNodeIndex = null;
 
+  console.log(links);
+
   // Create linkage lines for each element in links data
   const linkLines = globalGroup
     .selectAll("line")
     .data(links)
     .enter()
-    .append("line")
+    .append("path")
+    .attr("d", (d) => {
+      const start = d.source.index * SPACING;
+      const end = d.target.index * SPACING;
+      return [
+        "M",
+        width / 3, // start x
+        start, // start y
+        "A", // draw absolute ellipse
+        (start - end) / 2, // x axis radius
+        ",",
+        start - end / 2, // y axis radius
+        0, // x axis rotation
+        0, // large arc flag
+        ", ",
+        1, // sweep flag
+        ",",
+        width / 3, // end X
+        end, // end Y
+      ].join(" ");
+    })
     .classed("routing", (d) => d.type === ROUTING_RULE)
     .classed("routingElse", (d) => d.type === ROUTING_RULE_ELSE);
 
@@ -102,12 +145,12 @@ const main = async () => {
     })
     .on("click", (_, d) =>
       selectNode(selectedNodeIndex === d.index ? null : d.index)
-    );
+    )
+    .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+
   nodes
     .append("circle")
-    .attr("r", (_, index) =>
-      index === 0 || index === data.length - 1 ? radius * 2 : radius
-    )
+    .attr("r", radius)
     .classed("hasSkip", (d) => d?.skip?.length);
   nodes
     .append("text")
@@ -254,21 +297,6 @@ const main = async () => {
           })
           .join("")
       : "N/A";
-
-  const simulation = d3
-    .forceSimulation(data)
-    .force("charge", d3.forceManyBody().strength(-10))
-    .force("collide", d3.forceCollide(60))
-    .force("center", d3.forceCenter(width / 2, height / 2).strength(0.75))
-    .force(
-      "y-axis-ordering",
-      d3
-        .forceY()
-        .y((_, i) => i * 55)
-        .strength(6)
-    )
-    .force("linkages", d3.forceLink().links(links).distance(100))
-    .on("tick", handleTick);
 };
 
 main();

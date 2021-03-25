@@ -9,7 +9,7 @@
     "width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="./index.js" type="module" defer></script>
+    <script src="./index-arc.js" type="module" defer></script>
     <style>
      html {
         width: 100%;
@@ -64,7 +64,7 @@
      .selected circle {
          stroke: yellow;
          stroke-opacity: 0.65;
-         stroke-width: 50px;
+         stroke-width: 20px;
      }
      text {
          fill: black;
@@ -76,20 +76,21 @@
          stroke-width: 1px;
          font-size: 1.2em;
      }
-     line {
+     path {
          stroke: grey;
          stroke-width: 3px;
          marker-end: url(#arrowhead-grey);
          transition: 0.25s;
+         fill: none;
      }
-     line.routing {
+     path.routing {
          stroke: green;
          marker-end: url(#arrowhead-green);
      }
      span.routing {
          color: green;
      }
-     line.routingElse {
+     path.routingElse {
          stroke: red;
          stroke-dasharray: 2;
          marker-end: url(#arrowhead-red);
