@@ -101,7 +101,9 @@ const main = async () => {
     );
   nodes
     .append("circle")
-    .attr("r", radius)
+    .attr("r", (_, index) =>
+      index === 0 || index === data.length - 1 ? radius * 2 : radius
+    )
     .classed("hasSkip", (d) => d?.skip?.length);
   nodes
     .append("text")
